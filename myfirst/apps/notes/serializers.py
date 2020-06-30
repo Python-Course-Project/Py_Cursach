@@ -40,7 +40,7 @@ class MyNoteSeril(serializers.PrimaryKeyRelatedField):  #PrimaryKeyRelatedField
         user = self.context['request'].user
         # onl_user_notes = Note.objects.filter(user=user)
         # queryset = Categoria.objects.exclude(my_note=onl_user_notes)
-        queryset = Note.objects.filter(user=user)
+        queryset = Note.objects.filter(user=user, isadded=False)
         return queryset
 
 """

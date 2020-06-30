@@ -20,7 +20,7 @@ class Note(models.Model):
     """
     editor = models.ManyToManyField(User, blank=True, verbose_name='Редактор', related_name='editor_note',
                                  help_text='Вы можете предоставить доступ к вашей заметки', null=True)
-
+    isadded = models.BooleanField(default=False)
     """
     Также в мета можно настроить сортировку вывода данных
     """
@@ -39,7 +39,7 @@ class Categoria(models.Model):
                                    related_name='creator_categ')
     note_categoria = models.CharField(verbose_name='категория заметки', max_length=100,
                                   blank=False, unique=True)  # Небольшой объём 200-300
-    my_note = models.ManyToManyField(Note, verbose_name='Заметки', blank=True, null=True)
+    my_note = models.ManyToManyField(Note, verbose_name='Заметки', blank=True, null=True, related_name='notes')
 
     class Meta:
         verbose_name = 'Категория'

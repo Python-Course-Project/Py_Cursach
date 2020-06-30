@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .permissions import IsCreater, IsCreaterNote, IsEditorNote
@@ -15,9 +15,10 @@ from .serializers import SecontNoteDetailSeril,\
 from functools import partial
 from rest_framework import filters
 from django.db.models import Q
+from .service import get_client_ip
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
+from django.db import models
 
 """
 Категории
@@ -26,9 +27,21 @@ class CategoriaCreateView(generics.CreateAPIView):
     serializer_class = CategoriaDetailSeril
     queryset = Categoria.objects.all()
     permission_classes = (IsAuthenticated, IsCreater)
-    # def get_serializer_class(self):
-    #      serializer = CategoriaSchema
-    #      return Response(serializer.data)
+
+    # def post(self, request, *args, **kwargs):
+    #     data = request.data
+    #     serializer = self.serializer_class(data=data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.request['my_note_isadded'] = True
+    #    # return self.create(request, *args, **kwargs)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    
+    # def get_queryset(self):
+    #     my_note = Note.objects.annotate(
+    #         isadded_user=models.Count("notes", filter=models.Q(notes__creator=self.request.user))
+    #     )
+    #     return my_note
 
 class CategoriaListView(generics.ListAPIView):
     serializer_class = CategoriaListSeril
