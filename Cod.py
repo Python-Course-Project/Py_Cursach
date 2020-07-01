@@ -7,7 +7,8 @@ from sign_up import Ui_Sign_up
 from men_wn import Ui_Dialog
 from main_wnd import Ui_wnd
 from enter_f import Ui_filename
-# from cat_m import Ui_Categ
+from cat_m import Ui_Categ
+from open_men import Ui_Open
 import requests
 import sys
 
@@ -87,6 +88,13 @@ class Men_c(QtWidgets.QDialog, Ui_Dialog):
     def cre_btn(self, w1, w2):
         change_w(w1, w2)
 
+    def op_bt(self,w1,w2):
+        w2.listfiles.addItem("1")
+        # r = requests.get("url")
+        # for value in r.headers('filename'):
+        #  w2.listfiles.addItem(value)
+        change_w(w1,w2)
+
 
 class Note_p(QtWidgets.QDialog, Ui_wnd):
     def __init__(self, parent=None):
@@ -111,18 +119,37 @@ class File_e(QtWidgets.QDialog, Ui_filename):
     def gt_bt(self, w1, w2, textc):
         self.filenam = self.file_t.text()
         print(self.filenam)
+        # print(textc)
+        # change_w(w1, w2)
         param_req = {"filename": self.filenam, "text": [textc]}
-        response = requests.get("url", data=param_req)
+        response = requests.post("url", data=param_req)
         if response:
             change_w(w1, w2)
         else:
             show_m('Warning', 'Filename with this name exist')
 
 
-# class Cat_e(QtWidgets.QDialog, Ui_Categ):
-#     def __init__(self, parent=None):
-#         QtWidgets.QDialog.__init__(self, parent)
-#         self.setupUi(self)
+class Cat_e(QtWidgets.QDialog, Ui_Categ):
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+class Open_f(QtWidgets.QDialog, Ui_Open):
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def ret_bt(self,w1,w2):
+        # for i in range(0,w2.listfiles.size()):
+        #     w2.listfiles.removeItemWidget(w2.listfiles[i])
+        # TODO подумать над тем что при возвращении меню выбора у меня не удаляется список файлов что является багом
+        change_w(w1,w2)
+
+    def del_btn(self):
+        dele = self.listfiles.currentItem().text()
+        d = requests.delete("url", data = dele)
+        if d.status_code != 200:
+            show_m('Warning', 'Something wrong')
 
 
 if __name__ == "__main__":
@@ -132,6 +159,7 @@ if __name__ == "__main__":
     men = Men_c()
     note_p = Note_p()
     filen = File_e()
+    op = Open_f()
     # try1 = Cat_e()
     main.Login_b.clicked.connect(lambda: main.loginCheck(main, men))
     main.sign_b.clicked.connect(lambda: main.sign_btn(main, sign))
@@ -140,5 +168,8 @@ if __name__ == "__main__":
     note_p.pushButton.clicked.connect(lambda: note_p.ret_b(note_p, men))
     note_p.sv_btn.clicked.connect(lambda: note_p.sv(note_p, filen))
     filen.got_bt.clicked.connect(lambda: filen.gt_bt(filen, men, note_p.textc))
+    men.pushButton_2.clicked.connect(lambda :men.op_bt(men,op))
+    op.dButton.clicked.connect(lambda :op.del_btn())
+    op.rButton.clicked.connect(lambda :op.ret_bt(op,men))
     main.show()
     sys.exit(app.exec_())
