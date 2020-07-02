@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'sldz=q%qo7@8muxc-e(i_yb8&ozu%m
 #DEBUG = False
 DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 
-ALLOWED_HOSTS = ['safe-sands-19764.herokuapp.com', ]
+ALLOWED_HOSTS = ['nameless-sands-73623.herokuapp.com', ]
 
 
 # Application definition
