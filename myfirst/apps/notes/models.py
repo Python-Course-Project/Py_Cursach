@@ -20,7 +20,6 @@ class Note(models.Model):
     """
     editor = models.ManyToManyField(User, blank=True, verbose_name='Редактор', related_name='editor_note',
                                  help_text='Вы можете предоставить доступ к вашей заметки', null=True)
-    isadded = models.BooleanField(default=False)
     """
     Также в мета можно настроить сортировку вывода данных
     """
@@ -47,11 +46,4 @@ class Categoria(models.Model):
     def __str__(self):
         return '{0} ({1}) ({2})'.format(self.note_categoria, self.creator.username, self.my_note.note_title,
                                         self.my_note.note_text, self.my_note.editor)
-
-
-# class Profile(model.Model):
-#     note = models.ManyToManyField(Note, blank=False, verbose_name='заметка', related_name='user_note')
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True)
-#     def __str__(self):
-#         return self.user.username
 
