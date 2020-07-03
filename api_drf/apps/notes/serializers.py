@@ -22,7 +22,7 @@ class CategoryDetailSeril(serializers.ModelSerializer): #Вывод всех п�
     class Meta:
         model = Category
         fields = '__all__'
-        read_only_fields = ('my_note_isadded', )
+        #read_only_fields = ('my_note_isadded', )
 """
  Форматирования вывода заметок в категориях
 """
@@ -60,7 +60,7 @@ class CreateNoteSeril(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = '__all__'
-        read_only_fields = ('user', 'isadded', )
+        read_only_fields = ('user', )
 
 """
 Получение конкретно заметки Редактором
@@ -80,8 +80,8 @@ class SecontNoteDetailSeril(serializers.ModelSerializer): #Вывод всех �
     editor = EditorWithoutUser(many=True)
     class Meta:
         model = Note
-        fields = ('note_title', 'note_text', 'pub_date', 'editor', 'isadded', )
-        read_only_fields = ('user', 'isadded')
+        fields = ('note_title', 'note_text', 'pub_date', 'editor', )
+        read_only_fields = ('user',)
 
 """
 Получение списка заметок
