@@ -66,10 +66,10 @@ class CreateNoteSeril(serializers.ModelSerializer):
 Получение конкретно заметки Редактором
 """
 class NoteDetailSerilEditor(serializers.ModelSerializer):
-    editor = EditorWithoutUser(many=True)
+    editor = EditorWithoutUser(many=True, read_only=True)
     class Meta:
         model = Note
-        fields = ('note_text', )
+        fields = '__all__'
         read_only_fields = ('note_title', 'pub_date', 'editor', 'user')
 
 
