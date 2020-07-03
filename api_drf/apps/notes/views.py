@@ -57,7 +57,9 @@ class NoteListView(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        all_notes = self.queryset.filter(user=self.request.user) | self.queryset.exclude(user=self.request.user).filter(
+            editor=self.request.user)
+        return all_notes
 
 """
 Получение конкретной заметки редактором
