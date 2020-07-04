@@ -4,6 +4,14 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 """
+Сериализатор для пользователей
+"""
+class UserSeril(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username')
+
+"""
  Позволяет получить только заметки пользователя для добавления в категории
 """
 class MyNoteSeril(serializers.PrimaryKeyRelatedField):  #PrimaryKeyRelatedField

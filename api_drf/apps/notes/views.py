@@ -7,9 +7,19 @@ from .serializers import SecontNoteDetailSeril,\
     CategoryListSeril,\
     CategoryDetailSeril,\
     CreateNoteSeril,\
-    NoteDetailSerilEditor
+    NoteDetailSerilEditor, UserSeril
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
+"""
+Получение всех пользователей
+"""
+class UserListView(generics.ListAPIView):
+    serializer_class = UserSeril
+    queryset = User.objects.all()
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        return self.queryset.exclude(username=self.request.user) & self.queryset.exclude(is_superuser=True)
 
 """
 Категории
