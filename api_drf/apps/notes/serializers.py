@@ -54,7 +54,7 @@ class CategoryListSeril(serializers.ModelSerializer):
 """
 Позволяет в editor исключить самого пользователя
 """
-class EditorWithoutUser(serializers.PrimaryKeyRelatedField):
+class EditorWithoutUser(serializers.StringRelatedField):
     def get_queryset(self):
         user = self.context['request'].user
         queryset = User.objects.exclude(username=user).exclude(is_superuser=True)
