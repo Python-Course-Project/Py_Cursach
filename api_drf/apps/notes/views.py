@@ -59,18 +59,29 @@ class NoteCreateView(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 """
-Получение всех заметок
+Получение всех заметок как создатель
 """
-class NoteListView(generics.ListAPIView):
+class NoteListViewAsCreator(generics.ListAPIView):
     serializer_class = SecontNoteListSeril
     queryset = Note.objects.all() #Говоряит о том, какие записи мы хотим вынуть
     permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
-        all_notes = self.queryset.filter(user=self.request.user) | self.queryset.exclude(user=self.request.user).filter(
-            editor=self.request.user)
+        all_notes = self.queryset.filter(user=self.request.user)
         return all_notes
 
+"""
+Получение всех заметок как редактор
+"""
+class NoteListViewAsEditor(generics.ListAPIView):
+    serializer_class = SecontNoteListSeril
+    queryset = Note.objects.all() #Говоряит о том, какие записи мы хотим вынуть
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        all_notes = self.queryset.exclude(user=self.request.user).filter(
+            editor=self.request.user)
+        return all_notes
 """
 Получение конкретной заметки редактором
 """
