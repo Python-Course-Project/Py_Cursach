@@ -48,6 +48,14 @@ class Ui_Open(object):
         font.setPointSize(11)
         self.rButton.setFont(font)
         self.rButton.setObjectName("rButton")
+        self.deButton = QtWidgets.QPushButton(Dialog)
+        self.deButton.setGeometry(QtCore.QRect(430, 130, 131, 41))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.deButton.setFont(font)
+        self.deButton.setObjectName("deButton")
+
+
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -60,3 +68,4 @@ class Ui_Open(object):
         self.cButton.setText(_translate("Dialog", "Category"))
         self.sButton.setText(_translate("Dialog", "Share"))
         self.rButton.setText(_translate("Dialog", "Return"))
+        self.deButton.setText(_translate("Dialog", "Delete edit"))

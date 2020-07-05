@@ -6,19 +6,47 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>461</width>
-    <height>99</height>
+    <width>406</width>
+    <height>140</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="user_btn">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>381</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Got it!</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="userline">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>50</y>
+     <width>381</width>
+     <height>41</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="userlabel">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>121</width>
+     <width>381</width>
      <height>31</height>
     </rect>
    </property>
@@ -28,43 +56,10 @@
     </font>
    </property>
    <property name="text">
-    <string>Create</string>
+    <string>Enter username</string>
    </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>10</y>
-     <width>131</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Open</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_l">
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>10</y>
-     <width>131</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Log out</string>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

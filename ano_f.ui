@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>461</width>
-    <height>99</height>
+    <width>400</width>
+    <height>142</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="got_bt">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>121</width>
+     <y>100</y>
+     <width>381</width>
      <height>31</height>
     </rect>
    </property>
@@ -28,33 +28,25 @@
     </font>
    </property>
    <property name="text">
-    <string>Create</string>
+    <string>Got it!</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>10</y>
-     <width>131</width>
-     <height>31</height>
+     <x>10</x>
+     <y>50</y>
+     <width>381</width>
+     <height>41</height>
     </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Open</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_l">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>20</x>
      <y>10</y>
-     <width>131</width>
+     <width>361</width>
      <height>31</height>
     </rect>
    </property>
@@ -63,8 +55,14 @@
      <pointsize>11</pointsize>
     </font>
    </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
    <property name="text">
-    <string>Log out</string>
+    <string>Do you want to change filename?</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>
