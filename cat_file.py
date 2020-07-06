@@ -31,4 +31,4 @@ class Ui_CatF(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.cfpushButton.setText(_translate("Dialog", "Open"))
+        self.cfpushButton.setText(_translate("Dialog", "Main Menu"))

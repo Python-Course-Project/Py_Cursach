@@ -17,6 +17,9 @@ from cat_men import Ui_Catm
 from cat_file import Ui_CatF
 from new_cat import Ui_NewC
 from new_catf import Ui_NewCF
+from edit_cat import Ui_EditC
+from edit_men import Ui_EditM
+from edit_del import Ui_EditD
 import requests
 import json
 import sys
@@ -448,7 +451,7 @@ class Acat(QtWidgets.QDialog, Ui_Catm):
         self.clistWidget.clear()
         change_w(w1, w2)
 
-    def categ_op(self, w1, w2, token,w3):
+    def categ_op(self, w1, w2, token, w3):
         catn = self.clistWidget.currentItem().text()
         r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
                          headers={"Authorization": "Token " + str(token)})
@@ -460,29 +463,62 @@ class Acat(QtWidgets.QDialog, Ui_Catm):
                 note = e["my_note"]
         if len(note) > 0:
             for n in note:
-                w2.cflistWidget.addItem(e)
-                change_w(w1, w2)
-                self.clistWidget.clear()
+                w2.cflistWidget.addItem(n["note_title"])
+            change_w(w1, w2)
+            self.clistWidget.clear()
         else:
-            show_m('Warning','Nothing to open')
-            change_w(w1,w3)
+            show_m('Warning', 'Nothing to open')
+            change_w(w1, w3)
             self.clistWidget.clear()
 
-    def newcat(self,w1,w2):
+    def newcat(self, w1, w2):
         change_w(w1, w2)
         self.clistWidget.clear()
+
+    def delete_bt(self, token):
+        text = self.clistWidget.currentItem().text()
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        ids = 0
+        for e in categ:
+            if text == e["note_category"]:
+                ids = e["id"]
+        request = requests.delete("https://nameless-sands-73623.herokuapp.com/api/v1/category/detail/" + str(ids),
+                                  headers={"Authorization": "Token " + str(token)})
+        self.clistWidget.currentItem().setHidden(True)
+
+    def Edit_bt(self, w1, w2, token):
+        text = self.clistWidget.currentItem().text()
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        self.idc = 0
+        for e in categ:
+            if text == e["note_category"]:
+                self.idc = e["id"]
+
+        change_w(w1, w2)
+        self.clistWidget.clear()
+        w2.Editcatn.setText(text)
+
 
 class CatF(QtWidgets.QDialog, Ui_CatF):
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 
+    def main_men(self, w1, w2):
+        self.cflistWidget.clear()
+        change_w(w1, w2)
+
+
 class NewCat(QtWidgets.QDialog, Ui_NewC):
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-    def newc_bt(self,w1,w2,token):
+    def newc_bt(self, w1, w2, token):
         self.catn = self.nclineEdit.text()
         r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
                          headers={"Authorization": "Token " + str(token)})
@@ -499,7 +535,7 @@ class NewCat(QtWidgets.QDialog, Ui_NewC):
             notes = json.loads(rу.text)
             for x in notes:
                 w2.listWidget.addItem(x["note_title"])
-            change_w(w1,w2)
+            change_w(w1, w2)
             self.nclineEdit.setText("")
 
 
@@ -507,6 +543,122 @@ class NewCatF(QtWidgets.QDialog, Ui_NewCF):
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
+        self.mass = []
+
+    def add_bt(self, catn, token, w1, w2):
+        if not self.listWidget.currentItem().isSelected() and len(self.mass) > 0:
+            self.listWidget.clear()
+            param_req = {"note_category": catn, "my_note": self.mass}
+            re = requests.post("https://nameless-sands-73623.herokuapp.com/api/v1/category/create/", data=param_req,
+                               headers={"Authorization": "Token " + str(token)})
+            self.mass.clear()
+            r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
+                             headers={"Authorization": "Token " + str(token)})
+            categ = json.loads(r.text)
+            for e in categ:
+                w2.clistWidget.addItem(e["note_category"])
+            change_w(w1, w2)
+        if not self.listWidget.currentItem().isSelected():
+            param_req = {"note_category": catn}
+            r = requests.post("https://nameless-sands-73623.herokuapp.com/api/v1/category/create/", data=param_req,
+                              headers={"Authorization": "Token " + str(token)})
+            self.listWidget.clear()
+            re = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
+                              headers={"Authorization": "Token " + str(token)})
+            categ = json.loads(re.text)
+            for e in categ:
+                w2.clistWidget.addItem(e["note_category"])
+            change_w(w1, w2)
+        else:
+            text = self.listWidget.currentItem().text()
+            rу = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/note/all/as_creator/",
+                              headers={"Authorization": "Token " + str(token)})
+            notes = json.loads(rу.text)
+            idn = 0
+            for x in notes:
+                if text == x["note_title"]:
+                    idn = x["id"]
+            self.mass.append(idn)
+            self.listWidget.currentItem().setHidden(True)
+
+    def ok_bt(self, w1, w2, token, catn):
+        self.listWidget.clear()
+        param_req = {"note_category": catn, "my_note": self.mass}
+        re = requests.post("https://nameless-sands-73623.herokuapp.com/api/v1/category/create/", data=param_req,
+                           headers={"Authorization": "Token " + str(token)})
+        self.mass.clear()
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        for e in categ:
+            w2.clistWidget.addItem(e["note_category"])
+        change_w(w1, w2)
+
+
+class EditorC(QtWidgets.QDialog, Ui_EditC):
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def next_btn(self, w1, w2, token, id):
+        text = self.Editcatn.text()
+        r = requests.patch("https://nameless-sands-73623.herokuapp.com/api/v1/category/detail/" + str(id),
+                           data={"note_category": text},
+                           headers={"Authorization": "Token " + str(token)})
+        self.Editcatn.setText("")
+        change_w(w1, w2)
+
+
+class EditorM(QtWidgets.QDialog, Ui_EditM):
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def main_men_bt(self, w1, w2, token):
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        for e in categ:
+            w2.clistWidget.addItem(e["note_category"])
+        change_w(w1, w2)
+
+    def del_bt(self, w1, w2, token, id):
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/all/",
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        for e in categ:
+            if id == e["id"]:
+                for x in e["my_note"]:
+                    w2.listWidget.addItem(x["note_title"])
+        change_w(w1, w2)
+
+
+class EditorD(QtWidgets.QDialog, Ui_EditD):
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def del_bt(self, token, id):
+        text = self.listWidget.currentItem().text()
+        re = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/note/all/as_creator/",
+                          headers={"Authorization": "Token " + str(token)})
+        name = json.loads(re.text)
+        idd = 0
+        for x in name:
+            if text == x["note_title"]:
+                idd = x["id"]
+
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/detail/" + str(id),
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        categ["my_note"].remove(idd)
+        rc = requests.put("https://nameless-sands-73623.herokuapp.com/api/v1/category/detail/" + str(id),data = categ,
+                    headers={"Authorization": "Token " + str(token)})
+        self.listWidget.currentItem().setHidden(True)
+
+    def ok_bt(self, w1, w2):
+        self.listWidget.clear()
+        change_w(w1, w2)
 
 
 if __name__ == "__main__":
@@ -525,6 +677,9 @@ if __name__ == "__main__":
     catf = CatF()
     newc = NewCat()
     newcf = NewCatF()
+    editc = EditorC()
+    editm = EditorM()
+    editd = EditorD()
     # try1 = Cat_e()
     main.Login_b.clicked.connect(lambda: main.loginCheck(main, men))
     main.sign_b.clicked.connect(lambda: main.sign_btn(main, sign))
@@ -546,11 +701,21 @@ if __name__ == "__main__":
     men.pushButton_l.clicked.connect(lambda: men.log_bt(men, main, main.token))
     op.cButton.clicked.connect(lambda: op.categ_bt(op, allcateg, main.token))
     allcateg.cmpushButton.clicked.connect(lambda: allcateg.mainmen_bt(allcateg, men))
-    allcateg.copushButton.clicked.connect(lambda: allcateg.categ_op(allcateg, catf, main.token,men))
-    allcateg.cnpushButton.clicked.connect(lambda  : allcateg.newcat(allcateg,newc))
-    newc.ncpushButton.clicked.connect(lambda : newc.newc_bt(newc,newcf,main.token))
+    allcateg.copushButton.clicked.connect(lambda: allcateg.categ_op(allcateg, catf, main.token, men))
+    allcateg.cnpushButton.clicked.connect(lambda: allcateg.newcat(allcateg, newc))
+    newc.ncpushButton.clicked.connect(lambda: newc.newc_bt(newc, newcf, main.token))
+    newcf.pushButton_2.clicked.connect(lambda: newcf.add_bt(newc.catn, main.token, newcf, allcateg))
+    newcf.pushButton.clicked.connect(lambda: newcf.ok_bt(newcf, allcateg, main.token, newc.catn))
+    allcateg.cdpushButton.clicked.connect(lambda: allcateg.delete_bt(main.token))
+    catf.cfpushButton.clicked.connect(lambda: catf.main_men(catf, men))
+    allcateg.cepushButton.clicked.connect(lambda: allcateg.Edit_bt(allcateg, editc, main.token))
+    editc.next_bt.clicked.connect(lambda: editc.next_btn(editc, editm, main.token, allcateg.idc))
+    editm.mainmen_b.clicked.connect(lambda: editm.main_men_bt(editm, allcateg, main.token))
+    editm.delNote_b.clicked.connect(lambda: editm.del_bt(editm, editd, main.token, allcateg.idc))
+    editd.pushButton.clicked.connect(lambda: editd.del_bt(main.token, allcateg.idc))
+    editd.pushButton_2.clicked.connect(lambda: editd.ok_bt(editd, editm))
     main.show()
     sys.exit(app.exec_())
 
-#Todo доделать категории посмотреть баг, доделать открытие существующих категорий, доделать создание новой категории
+# Todo доделать категории посмотреть баг, доделать открытие существующих категорий, доделать создание новой категории
 # Todo отловить ошибку 400 и 400 вооот
