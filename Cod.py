@@ -20,6 +20,7 @@ from new_catf import Ui_NewCF
 from edit_cat import Ui_EditC
 from edit_men import Ui_EditM
 from edit_del import Ui_EditD
+from edit_add import Ui_EditA
 import requests
 import json
 import sys
@@ -99,6 +100,8 @@ class Sign_F(QtWidgets.QDialog, Ui_Sign_up):
                 self.lineEdit_2.setText("")
                 self.lineEdit_3.setText("")
                 change_w(w1, w2)
+            if response.status_code == 400:
+                show_m('Warning', 'User with this Username exist')
 
 
 class Men_c(QtWidgets.QDialog, Ui_Dialog):
@@ -632,6 +635,24 @@ class EditorM(QtWidgets.QDialog, Ui_EditM):
                     w2.listWidget.addItem(x["note_title"])
         change_w(w1, w2)
 
+    def edit_add(self,w1,w2,token,id):
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/detail/" + str(id),
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        mass = categ["my_note"]
+        req =  requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/note/all/as_creator/",
+                         headers={"Authorization": "Token " + str(token)})
+        namf = json.loads(req.text)
+        for x in namf:
+            result = False
+            for q in mass:
+                if x["id"] == q:
+                    result = True
+            if not result:
+                w2.listWidget.addItem(x["note_title"])
+
+        change_w(w1,w2)
+
 
 class EditorD(QtWidgets.QDialog, Ui_EditD):
     def __init__(self, parent=None):
@@ -660,6 +681,32 @@ class EditorD(QtWidgets.QDialog, Ui_EditD):
         self.listWidget.clear()
         change_w(w1, w2)
 
+class EditorA(QtWidgets.QDialog, Ui_EditA):
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+    def ok_bt(self,w1,w2):
+        self.listWidget.clear()
+        change_w(w1, w2)
+
+    def add_bt(self,token,id):
+        text = self.listWidget.currentItem().text()
+        re = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/note/all/as_creator/",
+                          headers={"Authorization": "Token " + str(token)})
+        name = json.loads(re.text)
+        idd = 0
+        for x in name:
+            if text == x["note_title"]:
+                idd = x["id"]
+
+        r = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/category/detail/" + str(id),
+                         headers={"Authorization": "Token " + str(token)})
+        categ = json.loads(r.text)
+        categ["my_note"].append(idd)
+        rc = requests.put("https://nameless-sands-73623.herokuapp.com/api/v1/category/detail/" + str(id),data = categ,
+                    headers={"Authorization": "Token " + str(token)})
+        self.listWidget.currentItem().setHidden(True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
@@ -680,6 +727,7 @@ if __name__ == "__main__":
     editc = EditorC()
     editm = EditorM()
     editd = EditorD()
+    edita = EditorA()
     # try1 = Cat_e()
     main.Login_b.clicked.connect(lambda: main.loginCheck(main, men))
     main.sign_b.clicked.connect(lambda: main.sign_btn(main, sign))
@@ -714,6 +762,9 @@ if __name__ == "__main__":
     editm.delNote_b.clicked.connect(lambda: editm.del_bt(editm, editd, main.token, allcateg.idc))
     editd.pushButton.clicked.connect(lambda: editd.del_bt(main.token, allcateg.idc))
     editd.pushButton_2.clicked.connect(lambda: editd.ok_bt(editd, editm))
+    editm.addNote_b.clicked.connect(lambda : editm.edit_add(editm,edita,main.token,allcateg.idc))
+    edita.pushButton_2.clicked.connect(lambda : edita.ok_bt(edita,editm))
+    edita.pushButton.clicked.connect(lambda : edita.add_bt(main.token, allcateg.idc))
     main.show()
     sys.exit(app.exec_())
 
