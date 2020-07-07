@@ -1,0 +1,124 @@
+#:include mainscreen.kv
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import CardTransition kivy.uix.screenmanager.CardTransition
+#:import SwapTransition kivy.uix.screenmanager.SwapTransition
+#:import WipeTransition kivy.uix.screenmanager.WipeTransition
+
+<AuthScreen>:
+    name: "AuthScreen"
+
+    login_input: Login
+    password_input: Password
+
+    MDCard:
+        size_hint: 0.9, 0.5
+        pos_hint: {"center_x": .5, "center_y": .5}
+        orientation: "vertical"
+        padding: "8dp"
+
+        Image:
+
+            source: "images/logo.png"
+
+        MDTextField:
+            id: Login
+            hint_text: "Login"
+            required: True
+
+        MDTextField:
+            id: Password
+            hint_text: "Password"
+            required: True
+            password: True
+
+
+        GridLayout:
+            cols: 3
+            rows: 1
+            orientation: "horizontal"
+
+            MDRectangleFlatButton:
+                text: "Register"
+                elevation_normal: 2
+                size_hint_x: None
+                text_color: app.theme_cls.secondary_text_color
+                md_bg_color:
+                on_release:
+                    root.manager.current = "RegisterScreen"
+
+            Widget:
+
+            MDRaisedButton:
+                text: "Login"
+                md_bg_color: app.theme_cls.text_color
+                size_hint_x: None
+                pos_hint: {"right": 1}
+                on_release: root.verify_auth()
+
+
+<RegisterScreen>:
+    name: "RegisterScreen"
+
+    login_input: Login
+    password_input: Password
+
+    MDCard:
+        size_hint: 0.9, 0.7
+        pos_hint: {"center_x": .5, "center_y": .5}
+        orientation: "vertical"
+        padding: "8dp"
+
+        Image:
+
+            source: "images/logo.png"
+
+        MDTextField:
+            id: Login
+            hint_text: "Login"
+            required: True
+
+        MDTextField:
+            id: Password
+            hint_text: "Password"
+            required: True
+            password: True
+
+        MDTextField:
+            id: Password_confirm
+            hint_text: "Repeat Password"
+            required: True
+            password: True
+
+
+        GridLayout:
+            cols: 3
+            rows: 1
+            orientation: "horizontal"
+
+            MDRectangleFlatButton:
+                text: "Return to Login"
+                md_bg_color:
+                size_hint_x: None
+                pos_hint: {"right": 1}
+                text_color: app.theme_cls.secondary_text_color
+                on_release:
+                    root.manager.current = "AuthScreen"
+
+            Widget:
+
+            MDRaisedButton:
+                text: "Register"
+                elevation_normal: 2
+                size_hint_x: None
+                md_bg_color: app.theme_cls.text_color
+
+
+
+ScreenManager:
+    transition: SwapTransition()
+
+    AuthScreen:
+
+    RegisterScreen:
+
+
