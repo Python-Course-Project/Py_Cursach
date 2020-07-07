@@ -1,0 +1,29 @@
+<MainScreen>:
+    NavigationLayout:
+        ScreenManager:
+            Screen:
+                BoxLayout:
+                    orientation: 'vertical'
+                    MDToolbar:
+                        title: 'Demo Application'
+                        left_action_items: [["menu", lambda _: nav_drawer.set_state('toggle')]]
+                        elevation:10
+
+                    Widget:
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            BoxLayout:
+                orientation: "vertical"
+                spacing: '8dp'
+                padding: '8dp'
+
+                Image:
+                    source: "images/logo.png"
+                MDLabel:
+                    text: "Your Notes"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                ScrollView:
