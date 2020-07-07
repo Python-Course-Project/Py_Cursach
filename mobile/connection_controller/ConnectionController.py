@@ -2,11 +2,10 @@ import requests
 from requests.compat import urljoin
 import json
 
-cfg_pass = "connection_config.json"
-
 
 class ConnectionController:
-    def __init__(self, config_pwd=cfg_pass):
+    def __init__(self, config_pwd="connection_config.json"):
+        self.cfg_pwd = "connection_config.json"
         with open(config_pwd) as cfg:
             self.cfg = json.load(cfg)
 
@@ -16,14 +15,15 @@ class ConnectionController:
         self.api_ver = "api/" + self.cfg["api_version"]
 
     def __del__(self):
-        with open(cfg_pass, 'w', encoding='utf-8') as cfg:
+        with open(self.cfg_pwd, 'w', encoding='utf-8') as cfg:
             json.dump(self.cfg, cfg, ensure_ascii=False, indent=4)
 
     @classmethod
     def register(cls, login, password):
         self = cls()
+        print(self.cfg)
         get_register_url = urljoin(self.url, self.api_ver + "/auth/users/")
-        response = requests.get(get_register_url, data={'username': login, 'password': password})
+        response = requests.post(get_register_url, data={'username': login, 'password': password})
 
         if not response.ok:
             response.raise_for_status()
@@ -42,6 +42,8 @@ class ConnectionController:
         self.cfg["username"] = login
         self.cfg["auth_token"] = response.json()["auth_token"]
 
+        return self.cfg["auth_token"]
+
     @classmethod
     def create_note(cls, title, text):
         self = cls()
@@ -55,26 +57,39 @@ class ConnectionController:
     @classmethod
     def pull_notes(cls):
         self = cls()
-        response_creator = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/note/all/as_creator/",
-                                        headers={"Authorization": "Token " + self.token})
-
         response_editor = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/note/all/as_editor/",
                                        headers={"Authorization": "Token " + self.token})
 
-        response_json = response_editor.json() + response_creator.json()
+        response_json = response_editor.json() + self.pull_created_notes()
 
         return response_json
 
     @classmethod
-    def is_owner(cls, note_id):
+    def pull_created_notes(cls):
         self = cls()
         response_creator = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/note/all/as_creator/",
                                         headers={"Authorization": "Token " + self.token})
-        for note in response_creator.json():
+
+        return response_creator.json()
+
+    @classmethod
+    def is_owner(cls, note_id):
+        for note in cls.pull_created_notes():
             if note["id"] == note_id:
                 return True
 
         return False
+
+    @classmethod
+    def get_single_note(cls, note_id):
+        self = cls()
+        url = "https://nameless-sands-73623.herokuapp.com/api/v1/note/detail/" + str(note_id) + "/creator"
+        prev = requests.get(url, headers={"Authorization": "Token " + self.token})
+
+        if not prev.ok:
+            prev.raise_for_status()
+
+        return prev.json()
 
     @classmethod
     def delete_note(cls, note_id):
@@ -90,16 +105,11 @@ class ConnectionController:
 
     @classmethod
     def patch_note(cls, note_id: int, new_text: str):
-        self = cls()
-        url = "https://nameless-sands-73623.herokuapp.com/api/v1/note/detail/" + str(note_id) + "/creator"
-        prev = requests.get(url, headers={"Authorization": "Token " + self.token})
-
-        if not prev.ok:
-            prev.raise_for_status()
-
-        note = prev.json()
+        note = cls.get_single_note(note_id)
         note["note_text"] = new_text
-        r = requests.patch(url, data=note, headers={"Authorization": "Token " + self.token})
+
+        url = "https://nameless-sands-73623.herokuapp.com/api/v1/note/detail/" + str(note_id) + "/creator"
+        r = requests.patch(url, data=note, headers={"Authorization": "Token " + cls().token})
 
         if not r.ok:
             r.raise_for_status()
@@ -123,42 +133,36 @@ class ConnectionController:
         if not r.ok:
             r.raise_for_status()
 
-    # @classmethod
-    # def patch_note(cls, note_id: int, new_text: str):
-    #     self = cls()
-    #     url = "https://nameless-sands-73623.herokuapp.com/api/v1/note/detail/" + str(note_id) + "/creator"
-    #     prev = requests.get(url, headers={"Authorization": "Token " + self.token})
-    #
-    #     if not prev.ok:
-    #         prev.raise_for_status()
-    #
-    #     note = prev.json()
-    #     note["note_text"] = new_text
-    #     r = requests.patch(url, data=note, headers={"Authorization": "Token " + self.token})
-    #
-    #     if not r.ok:
-    #         r.raise_for_status()
+    @classmethod
+    def get_id(cls, name=None):
+        self = cls()
+        if name is None:
+            name = self.username
+
+        all_users = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/users/all/",
+                             headers={"Authorization": "Token " + self.token})
+
+        for e in all_users.json():
+            if e["username"] == name:
+                return e["id"]
+
+    @classmethod
+    def add_editor(cls, note_id: int, new_editor_username: str):
+        self = cls()
+        if not cls.is_owner(note_id):
+            raise Exception("Unauthorized share for note_id:{} by user:{} to user:{}".format(note_id, self.username,
+                                                                                             new_editor_username))
+
+        note = cls.get_single_note(note_id)
+        note["editor"].append(cls.get_id(new_editor_username))
+
+        url = "https://nameless-sands-73623.herokuapp.com/api/v1/note/detail/" + str(note_id) + "/creator"
+        r = requests.patch(url, data=note, headers={"Authorization": "Token " + cls().token})
+        print(r.json())
+
+        if not r.ok:
+            r.raise_for_status()
 
 
-
-ConnectionController.login("test2", "testtesttest")
-#ConnectionController.create_note("Hi", "Benny")
-x = ConnectionController.pull_notes()
-print(x)
-
-
-#ConnectionController.patch_note(x[0]["id"], "Ананас")
-x = ConnectionController.pull_notes()
-print(x)
-
-#ConnectionController.login("test1", "testtesttest")
-#x = ConnectionController.pull_notes()
+#x = ConnectionController.login("test00", "test_test")
 #print(x)
-# ConnectionController.rename_note(32, "WAAAT")
-# print(ConnectionController.pull_notes())
-# # ConnectionController.create_note("Oh", "Hi Mark")
-# # print(ConnectionController.is_owner(20))
-# # print(ConnectionController.is_owner(30))
-# ConnectionController.delete_note(30)
-# print(ConnectionController.pull_notes())
-# ConnectionController.delete_note(95)
