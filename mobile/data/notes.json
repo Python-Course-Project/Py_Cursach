@@ -1,13 +1,5 @@
 [
     {
-        "id": 110,
-        "note_title": "test_title",
-        "note_text": "test_text",
-        "pub_date": "2020-07-08",
-        "user": 10,
-        "editor": []
-    },
-    {
         "id": 111,
         "note_title": "Ненавижу этот гребаный Kivy",
         "note_text": "Прям всем сердцем",
@@ -17,8 +9,8 @@
     },
     {
         "id": 112,
-        "note_title": "Hellow",
-        "note_text": "Orld",
+        "note_title": "Владимирский централ",
+        "note_text": "Ветер северный",
         "pub_date": "2020-07-08",
         "user": 10,
         "editor": []

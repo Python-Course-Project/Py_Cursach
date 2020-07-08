@@ -1,10 +1,13 @@
-from kivy.uix.screenmanager import ScreenManager
-from kivymd.uix.list import TwoLineListItem, OneLineListItem
-from kivy.properties import ObjectProperty
 import json
-from mobile.connection_controller.ConnectionController import ConnectionController
+
+from kivy.properties import ObjectProperty
+from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import SlideTransition
+from kivymd.uix.list import TwoLineListItem
 from singleton_decorator import singleton
-from kivy.uix.screenmanager import SwapTransition, SlideTransition
+
+from mobile.connection_controller.ConnectionController import ConnectionController
+
 
 @singleton
 class NoteField(ScreenManager):
@@ -14,9 +17,10 @@ class NoteField(ScreenManager):
     redacted_title = ObjectProperty()
 
     button_data = {
-        "pencil":"Edit note",
-        "plus":"Create note",
-        "cloud-download":"Download notes"
+        "pencil": "Edit note",
+        "plus": "Create note",
+        "cloud-download": "Download notes",
+        "trash-can": "Delete note"
     }
 
 
@@ -36,6 +40,9 @@ class NoteField(ScreenManager):
             json.dump(json_notes, file, ensure_ascii=False, indent=4)
 
     def save_input(self):
+        if not self.redacted_title.text:
+            return
+
         with open("data/active_note.json", encoding='utf-8') as file:
             note = json.load(file)
             with open("data/notes.json", encoding='utf-8') as notes:
@@ -50,18 +57,41 @@ class NoteField(ScreenManager):
             for e in self.note_list.walk():
                 self.note_list.remove_widget(e)
 
+    def delete_current(self):
+        with open("data/active_note.json", encoding='utf-8') as file:
+            note = json.load(file)
+            ConnectionController.delete_note(note["id"])
+
+            for e in self.note_list.walk():
+                self.note_list.remove_widget(e)
+            self.load_notes()
+            self.parse_json_notes()
 
     def button_callback(self, instance):
+        if instance.icon == "trash-can":
+            self.delete_current()
+
         if instance.icon == "pencil":
             self.transition = SlideTransition()
+
+            with open("data/active_note.json", encoding='utf-8') as file:
+                note = json.load(file)
+
+            self.redacted_text.text = note["note_title"]
+            self.redacted_title.text = note["note_text"]
             self.current = "EditScreen"
 
         if instance.icon == "plus":
             self.transition = SlideTransition()
+            self.redacted_text.text = ""
+            self.redacted_title.text = ""
             self.current = "EditScreen"
+            with open('data/active_note.json', 'w', encoding='utf-8') as file:
+                x = json.loads("{}")
+                json.dump(x, file, ensure_ascii=False, indent=4)
 
         if instance.icon == "cloud-download":
-            #TODO: исправить костыль
+            # TODO: исправить костыль
             for e in self.note_list.walk():
                 self.note_list.remove_widget(e)
 
