@@ -4,6 +4,7 @@ from requests.exceptions import HTTPError
 
 PASS_TO_CONFIG = "connection_config.json"
 
+
 class TestCase(unittest.TestCase):
     def test_init_controller(self):
         try:
@@ -113,12 +114,6 @@ class TestCase(unittest.TestCase):
 
         controller.login("test0", "test_test")
         controller.delete_note(found_id)
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
