@@ -1,7 +1,6 @@
 requests==2.24.0
 urllib3==1.25.9
 kivymd==0.104.1
-kivy-deps.sdl2
 docutils==0.16
 Pillow==7.1.2
 Kivy==1.11.1
