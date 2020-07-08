@@ -3,12 +3,23 @@
 #:import CardTransition kivy.uix.screenmanager.CardTransition
 #:import SwapTransition kivy.uix.screenmanager.SwapTransition
 #:import WipeTransition kivy.uix.screenmanager.WipeTransition
+#:import threading threading
+
+#<HiScreen>
+#    name: "HiScreen"
+#    on_enter: self.automatic_switch()
+#
+#    Image:
+#        source: "images/logo.png"
+
 
 <AuthScreen>:
     name: "AuthScreen"
 
     login_input: Login
     password_input: Password
+
+    #on_pre_enter: self.fill_on_enter()
 
     MDCard:
         size_hint: 0.9, 0.5
@@ -17,7 +28,6 @@
         padding: "8dp"
 
         Image:
-
             source: "images/logo.png"
 
         MDTextField:
@@ -27,6 +37,7 @@
 
         MDTextField:
             id: Password
+            icon_right: 'key-variant'
             hint_text: "Password"
             required: True
             password: True
@@ -38,13 +49,16 @@
             orientation: "horizontal"
 
             MDRectangleFlatButton:
-                text: "Register"
+                text: "Go to Register"
                 elevation_normal: 2
                 size_hint_x: None
                 text_color: app.theme_cls.secondary_text_color
                 md_bg_color:
                 on_release:
+                    root.manager.transition = SwapTransition()
                     root.manager.current = "RegisterScreen"
+
+
 
             Widget:
 
@@ -53,7 +67,8 @@
                 md_bg_color: app.theme_cls.text_color
                 size_hint_x: None
                 pos_hint: {"right": 1}
-                on_release: root.verify_auth()
+                on_release:
+                    threading.Thread(target = root.login_button_behavior).start()
 
 
 <RegisterScreen>:
@@ -61,6 +76,7 @@
 
     login_input: Login
     password_input: Password
+    password_confirm_input: Password_confirm
 
     MDCard:
         size_hint: 0.9, 0.7
@@ -69,7 +85,6 @@
         padding: "8dp"
 
         Image:
-
             source: "images/logo.png"
 
         MDTextField:
@@ -79,12 +94,14 @@
 
         MDTextField:
             id: Password
+            icon_right: 'key-variant'
             hint_text: "Password"
             required: True
             password: True
 
         MDTextField:
             id: Password_confirm
+            icon_right: 'key-variant'
             hint_text: "Repeat Password"
             required: True
             password: True
@@ -102,6 +119,7 @@
                 pos_hint: {"right": 1}
                 text_color: app.theme_cls.secondary_text_color
                 on_release:
+                    root.manager.transition = SwapTransition()
                     root.manager.current = "AuthScreen"
 
             Widget:
@@ -111,14 +129,16 @@
                 elevation_normal: 2
                 size_hint_x: None
                 md_bg_color: app.theme_cls.text_color
-
-
+                on_release: root.register_button_behavior()
 
 ScreenManager:
     transition: SwapTransition()
-
+#      TODO: Допилить приветку
+#    HiScreen:
+#
     AuthScreen:
 
     RegisterScreen:
 
+    MainScreen:
 
