@@ -1,0 +1,74 @@
+#: import Clock kivy.clock
+
+
+<TextField@TextInput>:
+
+
+<NoteField@ScreenManager>:
+    note_list:note_list
+
+    redacted_text:redacted_text
+    redacted_title:redacted_title
+
+    Screen:
+        name:"ChoseScreen"
+        FloatLayout:
+            ScrollView:
+                NoteList:
+                    id: note_list
+
+
+            MDFloatingActionButtonSpeedDial:
+                data: root.button_data
+                rotation_root_button: True
+                icon: "dots-vertical"
+                callback: root.button_callback
+                md_bg_color: app.theme_cls.accent_color
+                pos_hint: {'center_x': .9, 'center_y': .1}
+
+
+
+
+
+    Screen:
+        name: "EditScreen"
+        BoxLayout:
+            padding: "8dp"
+            orientation: "vertical"
+            MDTextField:
+                id: redacted_title
+                hint_text: "Title"
+
+                color_mode: 'custom'
+                line_color_focus: 0, 0, 0, 1
+
+            BoxLayout
+                TextField:
+                    id: redacted_text
+
+                MDFloatingActionButton:
+                    icon: "content-save"
+                    md_bg_color: app.theme_cls.accent_color
+                    on_release:
+                        root.save_input()
+                        root.current = "ChoseScreen"
+
+
+
+
+<NoteList@MDList>:
+    orientation: "vertical"
+
+    TwoLinedItemWithID:
+        note:{"HI":"MARK"}
+        text: "Title"
+        secondary_text: "Date"
+
+    Widget:
+
+
+<TwoLinedItemWithID@TwoLineListItem>:
+    id: button
+    on_release:
+        root.on_click()
+        root.request_screen_change()

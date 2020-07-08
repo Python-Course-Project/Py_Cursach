@@ -1,0 +1,115 @@
+#:import SlideTransition kivy.uix.screenmanager.SlideTransition
+#:include note_field.kv
+
+
+<MainNavigationLayout@NavigationLayout>:
+    username_field: username
+
+    ScreenManager:
+        id: screen_manager
+        Screen:
+            name: "NotesScreen"
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDToolbar:
+                    title: 'Good Note App'
+                    left_action_items: [["menu", lambda _: nav_drawer.set_state('toggle')]]
+                    elevation:10
+
+
+                NoteField:
+
+
+
+        Screen:
+            name: "CatScreen"
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDToolbar:
+                    title: 'Good Note App'
+                    left_action_items: [["menu", lambda _: nav_drawer.set_state('toggle')]]
+                    elevation:10
+
+                Image:
+                    source: "images/catface.jpg"
+
+        Screen:
+
+            BoxLayout:
+                orientation: 'vertical'
+
+                MDToolbar:
+                    title: 'Good Note App'
+                    left_action_items: [["menu", lambda _: nav_drawer.set_state('toggle')]]
+                    elevation:10
+
+
+
+    MDNavigationDrawer:
+        id: nav_drawer
+        on_touch_down:
+            username.text = root.pull_name()
+
+        BoxLayout:
+            orientation: "vertical"
+            spacing: '8dp'
+            padding: '8dp'
+
+            Image:
+                source: "images/logo.png"
+
+            MDLabel:
+                id: username
+                text: "banana"
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            ScrollView:
+                BoxLayout:
+                    orientation: "vertical"
+                    OneLineAvatarListItem:
+                        text: "Notes"
+
+                        on_release:
+                            nav_drawer.set_state("close")
+                            screen_manager.current = "NotesScreen"
+
+                        IconLeftWidget:
+                            icon: "note-text"
+
+
+                    OneLineAvatarListItem:
+                        text: "Settings"
+                        IconLeftWidget:
+                            icon: "cogs"
+
+                    OneLineAvatarListItem:
+                        text: "Cat pic"
+                        on_release:
+                            nav_drawer.set_state("close")
+                            screen_manager.current = "CatScreen"
+
+                        IconLeftWidget:
+                            icon: "cat"
+
+                    OneLineAvatarListItem:
+                        text: "Logout"
+
+                        on_release:
+                            app.root.transition = SlideTransition()
+                            app.root.transition.direction = "down"
+                            app.root.current = "AuthScreen"
+
+                        IconLeftWidget:
+                            icon: "exit-to-app"
+
+                    Widget:
+
+
+
+<MainScreen>:
+    name: "MainScreen"
+
+    MainNavigationLayout:
