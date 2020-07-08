@@ -1,4 +1,5 @@
 <MainScreen>:
+    name: "MainScreen"
     NavigationLayout:
         ScreenManager:
             Screen:
@@ -27,3 +28,7 @@
                     height: self.texture_size[1]
 
                 ScrollView:
+                    OneLineListItem:
+                        text: "Logout"
+                        on_release:
+                            root.manager.current = "AuthScreen"

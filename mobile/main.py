@@ -65,6 +65,7 @@ class AuthScreen(Screen):
         except HTTPError:
             dialog = MDDialog(title="Login", text="Wrong username/password \n Forgot password? Bad.",
                               size_hint=(0.8, None))
+            self.password_input.text = ""
             dialog.open()
 
             return False
@@ -90,18 +91,22 @@ class RegisterScreen(Screen):
 
     def verify_fields(self):
         if not self.login_input.text:
-            dialog = MDDialog(title="Register", text="Empty login rejected", size_hint=(0.8, None))
+            dialog = MDDialog(title="Register", text="Empty login rejected", size_hint=(0.8, 0.5))
             dialog.open()
+            self.password_input.text = ""
+            self.password_confirm_input.text = ""
             return False
 
         if not self.password_input.text:
-            dialog = MDDialog(title="Register", text="Empty password rejected", size_hint=(0.8, None))
+            dialog = MDDialog(title="Register", text="Empty password rejected", size_hint=(0.8, 0.5))
             dialog.open()
             return False
 
         if self.password_input.text != self.password_confirm_input.text:
-            dialog = MDDialog(title="Register", text="Passwords do not match", size_hint=(0.8, None))
+            dialog = MDDialog(title="Register", text="Passwords do not match", size_hint=(0.8, 0.5))
             dialog.open()
+            self.password_input.text = ""
+            self.password_confirm_input.text = ""
             return False
 
         return True
@@ -110,14 +115,12 @@ class RegisterScreen(Screen):
         try:
             ConnectionController.register(self.login_input.text, self.password_input.text)
         except ConnectionError:
-            dialog = MDDialog(title="Register", text="Network failed you(", size_hint=(0.8, None))
+            dialog = MDDialog(title="Register", text="Network failed you(", size_hint=(0.8, 0.5))
             dialog.open()
-
             return False
         except HTTPError:
-            dialog = MDDialog(title="Register", text="User already exist", size_hint=(0.8, None))
+            dialog = MDDialog(title="Register", text="User already exist", size_hint=(0.8, 0.5))
             dialog.open()
-
             return False
 
         return True

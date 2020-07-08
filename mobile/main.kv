@@ -129,7 +129,8 @@
                 elevation_normal: 2
                 size_hint_x: None
                 md_bg_color: app.theme_cls.text_color
-                on_release: root.register_button_behavior()
+                on_release:
+                    threading.Thread(target = root.register_button_behavior).start()
 
 ScreenManager:
     transition: SwapTransition()
