@@ -1,6 +1,6 @@
 requests==2.24.0
 urllib3==1.25.9
-singletone-decorator==1.15.0
+singleton-decorator==1.15.0
 kivymd==0.104.1
 kivy-deps.sdl2
 docutils==0.16
