@@ -1,18 +1,15 @@
-from kivymd.app import MDApp
-
-#from mobile.MainScreen import NavigationLayout
-import json
+# from mobile.MainScreen import NavigationLayout
 from kivy.core.window import Window
-from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import ObjectProperty
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import SwapTransition, SlideTransition
+from kivymd.app import MDApp
+from kivymd.uix.dialog import MDDialog
+from requests.exceptions import HTTPError, ConnectionError
+
 # noinspection PyUnresolvedReferences
 from mobile.MainScreen import MainScreen
 from mobile.connection_controller.ConnectionController import ConnectionController
-from requests.exceptions import HTTPError, ConnectionError
-from kivymd.uix.dialog import MDDialog
-from kivy.uix.screenmanager import SwapTransition, SlideTransition
-from kivymd.uix.list import TwoLineListItem
-from mobile.note_field import NoteField
 
 Window.size = (300, 500)
 
@@ -78,8 +75,6 @@ class AuthScreen(Screen):
                 self.manager.transition = SlideTransition()
                 self.manager.transition.direction = "up"
                 self.manager.current = "MainScreen"
-
-
 
 
 class RegisterScreen(Screen):

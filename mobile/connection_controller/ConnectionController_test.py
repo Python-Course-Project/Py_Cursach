@@ -1,6 +1,8 @@
 import unittest
-from mobile.connection_controller.ConnectionController import ConnectionController
+
 from requests.exceptions import HTTPError
+
+from mobile.connection_controller.ConnectionController import ConnectionController
 
 PASS_TO_CONFIG = "connection_config.json"
 
@@ -20,8 +22,8 @@ class TestCase(unittest.TestCase):
             ConnectionController(PASS_TO_CONFIG).register("test02", "test_test")
             ConnectionController(PASS_TO_CONFIG).register("test_failer", "test_test")
         except HTTPError:
-            #Пока в API удаление не завезли, молимся, что работает как надо
-            #self.assertTrue(False)
+            # Пока в API удаление не завезли, молимся, что работает как надо
+            # self.assertTrue(False)
             self.assertTrue(True)
         else:
             self.assertTrue(True)
@@ -32,7 +34,6 @@ class TestCase(unittest.TestCase):
     def test_login(self):
         token = ConnectionController(PASS_TO_CONFIG).login("test0", "test_test")
         self.assertTrue(isinstance(token, str) and len(token) == 40)
-
 
     def test_pull_note(self):
         controller = ConnectionController(PASS_TO_CONFIG)

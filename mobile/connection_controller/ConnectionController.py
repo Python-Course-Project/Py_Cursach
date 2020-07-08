@@ -1,6 +1,7 @@
+import json
+
 import requests
 from requests.compat import urljoin
-import json
 
 
 class ConnectionController:
@@ -143,7 +144,7 @@ class ConnectionController:
             name = self.username
 
         all_users = requests.get("https://nameless-sands-73623.herokuapp.com/api/v1/users/all/",
-                             headers={"Authorization": "Token " + self.token})
+                                 headers={"Authorization": "Token " + self.token})
 
         for e in all_users.json():
             if e["username"] == name:

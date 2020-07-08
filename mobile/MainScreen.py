@@ -1,8 +1,10 @@
-from kivymd.uix.screen import Screen
-from mobile.connection_controller.ConnectionController import ConnectionController
 from kivy.properties import ObjectProperty
-from kivymd.uix.toolbar import MDToolbar
 from kivymd.uix.navigationdrawer import NavigationLayout
+from kivymd.uix.screen import Screen
+from kivymd.uix.toolbar import MDToolbar
+
+from mobile.connection_controller.ConnectionController import ConnectionController
+
 
 class MainScreen(Screen):
     MainScreen = ObjectProperty()

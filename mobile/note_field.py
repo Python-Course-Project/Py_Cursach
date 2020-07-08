@@ -23,7 +23,6 @@ class NoteField(ScreenManager):
         "trash-can": "Delete note"
     }
 
-
     def parse_json_notes(self):
         with open("data/notes.json", encoding='utf-8') as notes:
             all_notes = json.load(notes)
@@ -32,7 +31,6 @@ class NoteField(ScreenManager):
             self.note_list.add_widget(
                 TwoLinedItemWithID(text=e["note_title"], secondary_text="Created at: " + e["pub_date"], note=e)
             )
-
 
     def load_notes(self, path_to_file="data/notes.json"):
         json_notes = ConnectionController.pull_notes()
@@ -109,8 +107,5 @@ class TwoLinedItemWithID(TwoLineListItem):
         with open("data/active_note.json", 'w', encoding='utf-8') as file:
             json.dump(self.note, file, ensure_ascii=False, indent=4)
 
-
     def request_screen_change(self):
         self.request_new_screen = 0
-
-
