@@ -3,7 +3,6 @@
 #:import CardTransition kivy.uix.screenmanager.CardTransition
 #:import SwapTransition kivy.uix.screenmanager.SwapTransition
 #:import WipeTransition kivy.uix.screenmanager.WipeTransition
-#:import threading threading
 
 #<HiScreen>
 #    name: "HiScreen"
@@ -68,7 +67,7 @@
                 size_hint_x: None
                 pos_hint: {"right": 1}
                 on_release:
-                    threading.Thread(target = root.login_button_behavior).start()
+                    root.login_button_behavior()
 
 
 <RegisterScreen>:
@@ -130,7 +129,7 @@
                 size_hint_x: None
                 md_bg_color: app.theme_cls.text_color
                 on_release:
-                    threading.Thread(target = root.register_button_behavior).start()
+                    root.register_button_behavior()
 
 ScreenManager:
     transition: SwapTransition()
@@ -142,4 +141,5 @@ ScreenManager:
     RegisterScreen:
 
     MainScreen:
+
 

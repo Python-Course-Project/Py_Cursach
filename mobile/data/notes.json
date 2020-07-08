@@ -1,0 +1,26 @@
+[
+    {
+        "id": 110,
+        "note_title": "test_title",
+        "note_text": "test_text",
+        "pub_date": "2020-07-08",
+        "user": 10,
+        "editor": []
+    },
+    {
+        "id": 111,
+        "note_title": "Ненавижу этот гребаный Kivy",
+        "note_text": "Прям всем сердцем",
+        "pub_date": "2020-07-08",
+        "user": 10,
+        "editor": []
+    },
+    {
+        "id": 112,
+        "note_title": "Hellow",
+        "note_text": "Orld",
+        "pub_date": "2020-07-08",
+        "user": 10,
+        "editor": []
+    }
+]

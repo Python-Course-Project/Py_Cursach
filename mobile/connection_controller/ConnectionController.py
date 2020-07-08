@@ -21,7 +21,6 @@ class ConnectionController:
     @classmethod
     def register(cls, login, password):
         self = cls()
-        print(self.cfg)
         get_register_url = urljoin(self.url, self.api_ver + "/auth/users/")
         response = requests.post(get_register_url, data={'username': login, 'password': password})
 
@@ -41,6 +40,10 @@ class ConnectionController:
 
         self.cfg["username"] = login
         self.cfg["auth_token"] = response.json()["auth_token"]
+        self.cfg["id"] = self.get_id(login)
+
+        with open(self.cfg_pwd, 'w', encoding='utf-8') as cfg:
+            json.dump(self.cfg, cfg, ensure_ascii=False, indent=4)
 
         return self.cfg["auth_token"]
 
@@ -162,6 +165,3 @@ class ConnectionController:
 
         if not r.ok:
             r.raise_for_status()
-
-#x = ConnectionController.login("test000", "test_test")
-#print(x)

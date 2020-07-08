@@ -1,19 +1,18 @@
 from kivymd.app import MDApp
 
-from kivy.lang import Builder
+#from mobile.MainScreen import NavigationLayout
+import json
 from kivy.core.window import Window
-from kivy.lang import Builder
-from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
 # noinspection PyUnresolvedReferences
 from mobile.MainScreen import MainScreen
 from mobile.connection_controller.ConnectionController import ConnectionController
 from requests.exceptions import HTTPError, ConnectionError
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
-from kivy.uix.screenmanager import WipeTransition, SwapTransition, SlideTransition
-from kivy.clock import Clock
+from kivy.uix.screenmanager import SwapTransition, SlideTransition
+from kivymd.uix.list import TwoLineListItem
+from mobile.note_field import NoteField
 
 Window.size = (300, 500)
 
@@ -39,7 +38,6 @@ class AuthScreen(Screen):
     # TODO: автозаполнение
     # def fill_on_enter(self):
     #     self.login_input.text = ConnectionController().username
-
 
     def verify_auth(self):
         if not self.login_input.text:
@@ -75,11 +73,11 @@ class AuthScreen(Screen):
     def login_button_behavior(self):
         if self.verify_auth():
             if self.log_in():
+                ConnectionController.pull_notes()
+
                 self.manager.transition = SlideTransition()
-                self.manager.direction = 'up'
+                self.manager.transition.direction = "up"
                 self.manager.current = "MainScreen"
-
-
 
 
 
@@ -132,11 +130,10 @@ class RegisterScreen(Screen):
                 self.manager.current = "AuthScreen"
 
 
-
 class MainApp(MDApp):
 
     def build(self):
-        pass
+        self.title = 'Cool Note App'
 
 
 if __name__ == "__main__":
